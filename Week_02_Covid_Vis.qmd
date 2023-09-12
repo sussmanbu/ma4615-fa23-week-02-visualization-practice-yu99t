@@ -1,7 +1,7 @@
 ---
 title: "Week 02: COVID Visualization Activity"
 date: "September, 11 2023"
-author: "**`[[`**Your Name**`]]`**"
+author: "Yuta Tsukumo"
 ---
 
 Today, we'll be working with a data set related to COVID.
@@ -11,6 +11,8 @@ Note, due to differences in the way race and ethnicity are encoded in the census
 
 ```{r load_data}
 library(tidyverse)
+library(patchwork)
+
 load("CRDT Data.RData")
 ls()
 ```
@@ -36,6 +38,81 @@ covid_data_count |>
 ```
 
 1. Write code for a plot and describe what you observe?
+
+```{r}
+data <- covid_data_count
+summary(data)
+table(data$state)
+# including PR;Puerto Rico, s in total 52 states are shown
+
+# categorize race as (White, Black, Latinx, Asian, Other)
+data$race_cat <- ifelse(data$race %in% c("Total", "White", "Black", "Latinx", "Asian"), data$race, "Other")
+table(data$race_cat)
+  
+# categorize states into 4 regions (Northeast, Midwest, South, West)
+# Puerto Rico included into South region
+data <- data %>%
+  mutate(
+    region = ifelse(state_name %in% c(
+      "Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island",
+      "Vermont", "New Jersey", "New York", "Pennsylvania"
+    ), "Northeast",
+    ifelse(state_name %in% c(
+      "Illinois", "Indiana", "Michigan", "Ohio", "Wisconsin",
+      "Iowa", "Kansas", "Minnesota", "Missouri", "Nebraska", "North Dakota",
+      "South Dakota"
+    ), "Midwest",
+    ifelse(state_name %in% c(
+      "Delaware","District of Columbia", "Florida", "Georgia", "Maryland", "North Carolina",
+      "South Carolina", "Virginia", "West Virginia", "Alabama", "Kentucky",
+      "Mississippi", "Tennessee", "Arkansas", "Louisiana", "Oklahoma", "Texas"
+    ), "South",
+    ifelse(state_name %in% c(
+      "Arizona", "Colorado", "Idaho", "Montana", "Nevada", "New Mexico",
+      "Utah", "Wyoming", "Alaska", "California", "Hawaii", "Oregon",
+      "Washington", "Puerto Rico"
+    ), "West", "Unknown"
+    ))))
+  )
+
+table(data$region)
+
+# create short data set where case and deaath are summed up by region/race_cat
+# How do I create a dataset with a date column, a race column, a region column, a number of infections column, and a number of deaths column, and then merge the columns so that for each date, if the race and region are the same, the number of infections and deaths are added together?
+
+
+p_case <- data %>%
+  filter(race_cat %in% c ("White", "Black", "Latinx", "Asian","Other")) %>%
+  ggplot(aes(x = date, y = Cases, color = race_cat)) + 
+  geom_line() +
+  labs(title = "Cases_by_Race") +
+  facet_wrap(~region) +
+  theme_minimal()
+
+p_case
+
+p_death <- data %>%
+  filter(race_cat %in% c ("White", "Black", "Latinx", "Asian","Other")) %>%
+  ggplot(aes(x = date, y = Deaths, color = race_cat)) + 
+  geom_line() +
+  labs(title = "Cases_by_Race") +
+  facet_wrap(~region) +
+  theme_minimal()
+p_death
+
+```
+
 2. Are there any conclusions you can draw?
+
+In all four regions, both the number of cases and deaths are increasing from April 2020 to March 2021, with particularly sharp increases around summer 2020 and January 2021.
+In all four regions, whites account for a larger proportion of cases and deaths when compared among races, but characteristically, in the West region, Latinos account for a larger proportion of cases than whites, and Latinos account for a larger proportion of deaths than in the other regions.
+
 3. What were you not able to do due to not having the R knowledge?
+
+The analysis after grouping by race and state does not proceed due to lacking my skill to create a data set that merges the columns so that the number of cases and deaths are added together if the race and region are the same on each date.
+
 4. What other data would be useful to better understand this data?
+
+With basic information such as age and gender, the comparison of infection trends in the patient background can be analyzed in more detail.
+In addition, when considering the burden on medical institutions, we should collect not only the number of infections, but also the number of severely ill patients, which is important when considering policies for the maintenance and support of medical institutions.
+Information on vaccination history would also be helpful.
