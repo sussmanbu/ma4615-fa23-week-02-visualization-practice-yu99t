@@ -109,10 +109,10 @@ In all four regions, whites account for a larger proportion of cases and deaths 
 
 3. What were you not able to do due to not having the R knowledge?
 
-The analysis after grouping by race and state does not proceed due to lacking my skill to create a data set that merges the columns so that the number of cases and deaths are added together if the race and region are the same on each date.
+The analysis after grouping by race and state does not proceed due to lacking my skill to create a data set that merges the rows so that the number of cases and deaths are added together if the race and region are the same on each date.
 
 4. What other data would be useful to better understand this data?
 
 With basic information such as age and gender, the comparison of infection trends in the patient background can be analyzed in more detail.
-In addition, when considering the burden on medical institutions, we should collect not only the number of infections, but also the number of severely ill patients, which is important when considering policies for the maintenance and support of medical institutions.
+In addition, when considering the burden on medical institutions, we should collect not only the number of infections or deaths, but also the number of severely ill patients, which is important when considering policies for the maintenance and support of medical institutions.
 Information on vaccination history would also be helpful.
